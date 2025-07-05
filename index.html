@@ -276,9 +276,9 @@
                 <div class="terminal-header">
                     <div class="terminal-title">yugi@portfolio: ~</div>
                     <div class="terminal-controls">
-                        <div class="terminal-button minimize"></div>
-                        <div class="terminal-button maximize"></div>
-                        <div class="terminal-button close"></div>
+                        <div class="terminal-button minimize" onclick="minimizeTerminal()"></div>
+                        <div class="terminal-button maximize" onclick="maximizeTerminal()"></div>
+                        <div class="terminal-button close" onclick="closeTerminal()"></div>
                     </div>
                 </div>
                 <div class="terminal-content">
@@ -403,6 +403,74 @@
             // Initial progress bar animation if learning section is visible
             setTimeout(animateProgressBars, 1000);
         });
+        
+        // Terminal control functions
+        function closeTerminal() {
+            const terminal = document.querySelector('.terminal-footer');
+            const footer = document.querySelector('footer');
+            
+            // Add closing animation
+            terminal.style.transform = 'translateY(100%)';
+            terminal.style.opacity = '0';
+            
+            setTimeout(() => {
+                footer.style.display = 'none';
+                
+                // Add a floating button to restore terminal
+                if (!document.querySelector('.restore-terminal-btn')) {
+                    const restoreBtn = document.createElement('div');
+                    restoreBtn.className = 'restore-terminal-btn';
+                    restoreBtn.innerHTML = '<i class="fas fa-terminal"></i>';
+                    restoreBtn.onclick = restoreTerminal;
+                    restoreBtn.title = 'Show Terminal';
+                    document.body.appendChild(restoreBtn);
+                }
+            }, 300);
+        }
+        
+        function restoreTerminal() {
+            const terminal = document.querySelector('.terminal-footer');
+            const footer = document.querySelector('footer');
+            const restoreBtn = document.querySelector('.restore-terminal-btn');
+            
+            footer.style.display = 'block';
+            
+            // Reset styles and animate in
+            terminal.style.transform = 'translateY(0)';
+            terminal.style.opacity = '1';
+            
+            // Remove restore button
+            if (restoreBtn) {
+                restoreBtn.remove();
+            }
+        }
+        
+        function minimizeTerminal() {
+            const terminalContent = document.querySelector('.terminal-content');
+            const terminal = document.querySelector('.terminal-footer');
+            
+            if (terminalContent.style.display === 'none') {
+                // Restore
+                terminalContent.style.display = 'block';
+                terminal.classList.remove('minimized');
+            } else {
+                // Minimize
+                terminalContent.style.display = 'none';
+                terminal.classList.add('minimized');
+            }
+        }
+        
+        function maximizeTerminal() {
+            const terminal = document.querySelector('.terminal-footer');
+            
+            if (terminal.classList.contains('maximized')) {
+                // Restore normal size
+                terminal.classList.remove('maximized');
+            } else {
+                // Maximize
+                terminal.classList.add('maximized');
+            }
+        }
     </script>
 </body>
 </html>
